@@ -1,0 +1,418 @@
+---
+title: "Google Data Analytics Capstone Project: Cyclistic Bike-Share Case Study"
+author: "Akshita Agrawal"
+date: "2023-07-10"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Introduction
+
+## About the Company
+In 2016, Cyclistic launched a successful bike-share offering. Since then, the program has grown to a fleet of 5,824 bicycles that are geotracked and locked into a network of 692 stations across Chicago. The bikes can be unlocked from one station and returned to any other station in the system anytime.
+
+Until now, Cyclistic’s marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as casual riders. Customers who purchase annual memberships are Cyclistic members.
+
+Cyclistic’s finance analysts have concluded that annual members are much more profitable than casual riders. Although the pricing flexibility helps Cyclistic attract more customers, Moreno believes that maximizing the number of annual members will be key to future growth. Rather than creating a marketing campaign that targets all-new customers, Moreno believes there is a very good chance to convert casual riders into members. She notes that casual riders are already aware of the Cyclistic program and have chosen Cyclistic for their mobility needs.
+
+Moreno has set a clear goal: Design marketing strategies aimed at **converting casual riders into annual members**. In order to do that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual riders would buy a membership, and how digital media could affect their marketing tactics. Moreno and her team are interested in analyzing the Cyclistic historical bike trip data to identify trends.
+
+## The Scenario
+
+The director of marketing believes the company’s future success depends on maximizing the number of annual memberships. The marketing analyst team wants to understand **how casual riders and annual members use Cyclistic bikes differently**. From these insights, the team will design a new marketing strategy to convert casual riders into annual members.
+
+### Assumptions
+I have assumed that the data provided in the source is the only available data on bike_share user patterns. I have also assumed that the future trends are going to be based on the historical trends.
+
+## Ask
+#### Guiding questions
+* **What is the problem you are trying to solve?**
+
+The main objective is to determine a way to build a profile for annual members and identify the best marketing strategies to turn casual bike riders into members.
+
+* **How can your insights drive business decisions?**
+
+The insights will help the marketing team in increasing the members.
+
+#### Key tasks
+* Identify the business task
+* Consider key stakeholders
+
+#### Deliverable
+A clear statement of the business task: **Find insights in the usage patterns of the riders to design a marketing campaign for membership conversion.**
+
+**Tools:** Analyzed and cleaned the monthly data separately in Excel, then used R to analyze the data as a whole.
+
+**Data Source:** [Trip_Data](https://divvy-tripdata.s3.amazonaws.com/index.html)
+
+**Data Set:** [Trip Data January2022-December2022]()
+
+
+##### Key Stakeholders
+* Lily Moreno
+* The Cyclistic marketing analytics team 
+* Casual Riders
+* Members
+
+## Prepare
+#### Guiding questions
+* **Where is your data located?**
+
+The data is located in a kaggle dataset.
+
+* **How is the data organized?**
+
+There is separate csv. file for each month.
+
+* **Are there issues with bias or credibility in this data? Does your data ROCCC?**
+
+The population of the dataset is it's own clients as bike riders thus, have full credibility.It is ROCCC because it's reliable, original, comprehensive, current and cited.
+
+* **How are you addressing licensing, privacy, security, and accessibility?**
+
+The company has their own licence over the dataset andthe dataset doesn't have any personal information about the riders.It is from an open source.
+
+* **How did you verify the data’s integrity?**
+
+All the files have consistent columns and each column has the correct type of data.
+
+* **How does it help you answer your question?**
+
+Relationship between the type of riders and their patterns could let us identify insights for our marketing campaign.
+* **Are there any problems with the data?**
+Many columns in the data have missing information.
+As riders’ personal identifiable information is hidden, it is not possible to connect pass purchases to credit cards numbers to determine if casual riders live in the Cyclistic service area or if they have purchased multiple single passes.
+
+#### Key Tasks
+* Download the data and save it with correct naming convention.
+* Organize the data
+* Determine it's credibility
+
+#### Deliverable
+* A description of all data sources used
+The data source consists of 12 CSV files. There is one file for each month. The period starts at January 2020 and runs until December 2020.
+
+## Process & Analyse
+#### Guiding questions
+* **What tools are chosen and why?**
+I started by compiling and cleaning data in Excel then loaded that data to R to manipulate it further as it will allow indepth analysis.
+
+* **Have you ensured the data’s integrity?**
+I examined the columns to check the consistency after manipulation.
+
+* **What steps have you taken to ensure that your data is clean?**
+The null values and duplicates were removed, the time and dates were formatted.
+
+* **How can you verify that your data is clean and ready to analyze?**
+The steps have been shown below.
+
+* **Have you documented your cleaning process so you can review and share those results?**
+The cleaning process has been documented throughout.
+
+#### Key Tasks
+* Check the data for errors
+* Choose tools
+* Transform the data
+* Document the cleaning process
+
+#### Deliverables
+Documentation:
+
+1. To start, I downloaded the data from the source and turning the .csv files into excel spreadsheets. The recent data included: 
+   June 2022
+   July 2022
+   August 2022
+   September 2022
+   October 2022
+   November 2022
+   December 2022
+   January 2023
+   February 2023
+   March 2023
+   April 2023
+   May 2023
+   
+2. I removed duplicates using the excel feature.
+
+3. Then removed all rows with any null values using the filter function.
+4. Then we move to R where I started by loading the relevant packages:
+```{r}
+#loading packages
+library(tidyverse)
+library(skimr)
+library(janitor)
+library(ggplot2)
+library(readxl)
+library(tinytex)
+```
+
+5. Then I imported the individual sheets.
+```{r}
+##Importing the CSV files
+tripdata1 <- read_excel("tripdata_clean.xlsx", 
+                             sheet = "June2022")
+str(tripdata1)
+
+tripdata2 <- read_excel("tripdata_clean.xlsx", 
+                        sheet = "July2022")
+str(tripdata2)
+
+tripdata3 <- read_excel("tripdata_clean.xlsx", 
+                        sheet = "August2022")
+str(tripdata3)
+
+tripdata4 <- read_excel("tripdata_clean.xlsx", 
+                        sheet = "September2022")
+str(tripdata4)
+
+tripdata5 <- read_excel("tripdata_clean.xlsx", 
+                        sheet = "October2022")
+str(tripdata5)
+
+tripdata6 <- read_excel("tripdata_clean.xlsx", 
+                        sheet = "November2022")
+str(tripdata6)
+
+tripdata7 <- read_excel("tripdata_clean.xlsx", 
+                        sheet = "December2022")
+str(tripdata7)
+
+tripdata8 <- read_excel("tripdata_clean.xlsx", 
+                        sheet = "January2023")
+str(tripdata8)
+
+tripdata9 <- read_excel("tripdata_clean.xlsx", 
+                        sheet = "Febuary2023")
+str(tripdata9)
+
+tripdata10 <- read_excel("tripdata_clean.xlsx", 
+                        sheet = "March2023")
+str(tripdata10)
+
+tripdata11 <- read_excel("tripdata_clean.xlsx", 
+                         sheet = "April2023")
+str(tripdata11)
+
+tripdata12 <- read_excel("tripdata_clean.xlsx", 
+                         sheet = "May2023")
+str(tripdata12)
+```
+
+6. Then I combined the individual files to one:
+```{r}
+## Combining the individual files into one; code learnt from kaggle.com
+tripdata_2023 <- rbind(tripdata1,tripdata2,tripdata3,tripdata4,tripdata5,tripdata6,
+                       tripdata7,tripdata8,tripdata9,tripdata10,tripdata11,tripdata12)
+
+## Then I checked the completeness of the data:
+rowtotal <- sum(
+  nrow(tripdata1),
+  nrow(tripdata2), 
+  nrow(tripdata3), 
+  nrow(tripdata4), 
+  nrow(tripdata5), 
+  nrow(tripdata6), 
+  nrow(tripdata7), 
+  nrow(tripdata8),
+  nrow(tripdata9), 
+  nrow(tripdata10),
+  nrow(tripdata11),
+  nrow(tripdata12))
+print(rowtotal)
+
+print(nrow(tripdata_2023))
+```
+
+7. Examin and correct the data:
+```{r}
+#examining the combined dataset
+head(tripdata_2023)
+
+#cleaning
+
+tripdata_2023$date <- as.Date(tripdata_2023$started_at)
+tripdata_2023$month <- format(as.Date(tripdata_2023$date), "%b")
+tripdata_2023$day <- format(as.Date(tripdata_2023$date), "%d")
+tripdata_2023$year <- format(as.Date(tripdata_2023$date), "%Y")
+tripdata_2023$day_of_week <- format(as.Date(tripdata_2023$date), "%A")
+head(tripdata_2023)
+
+#drop null values
+tripdata_2023 <- drop_na(tripdata_2023)
+#remove duplicates
+tripdata_2023_no_duplicates <- tripdata_2023[!duplicated(tripdata_2023$ride_id), ]
+print(paste("Removed", nrow(tripdata_2023) - nrow(tripdata_2023_no_duplicates), "duplicate rows"))
+
+```
+
+8. Then I started the analysis, it was done with the help of [this notebook](https://www.kaggle.com/code/mmaguire/google-data-analytics-capstone-case-study-1). firstly I observed the trends of riders, casual vs the members
+```{r}
+#ridelength
+tripdata_2023_v2 <- mutate(tripdata_2023_no_duplicates, ride_length = difftime(ended_at, started_at, units = "mins"))
+str(tripdata_2023_v2)
+
+##amount of members vs casual riders
+nrow(tripdata_2023_v2[tripdata_2023_v2$ride_length < 0,])
+tripdata_2023_v3 <- tripdata_2023_v2[!tripdata_2023_v2$ride_length <0,]
+glimpse(tripdata_2023_v3)
+
+rider_type_total <- table(tripdata_2023_v3$member_casual)
+head(rider_type_total)
+
+member_riders <- tripdata_2023_v3 %>% 
+  filter(member_casual == 'member') %>% 
+  summarise(count_riders = n())
+head(member_riders)
+casual_riders <- tripdata_2023_v3 %>% 
+  filter(member_casual == 'casual') %>% 
+  summarise(count_riders = n())
+head(casual_riders)
+diff_riders<- member_riders -casual_riders
+```
+
+```{r}
+#visualisation of usage
+tripdata_2023_v3 %>% 
+  group_by(member_casual,rideable_type) %>% 
+  summarise(total_rider_type = n()) %>% 
+  ggplot(aes(x = member_casual, y = total_rider_type, fill = rideable_type)) + 
+  geom_col(position = "dodge") + geom_text(aes(label = total_rider_type),vjust = 1.5,position = position_dodge(.9))
+```
+
+9. Then I tried to observe the monthly trends:
+```{r}
+#statistics on lengths
+trip_stats <- tripdata_2023_v3 %>% 
+  group_by(member_casual) %>% 
+  summarise(average_ride_length = mean(ride_length), standard_deviation = sd(ride_length), median_ride_length = median(ride_length), min_ride_length = min(ride_length), max_ride_length = max(ride_length))
+head(trip_stats)
+```
+
+```{r}
+#monthly trends
+tripdata_2023_v3$month <- ordered(tripdata_2023_v3$month, levels = c("Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar","Apr","May"))
+
+tripdata_2023_v3 %>% 
+  group_by(member_casual, month) %>% 
+  summarise(rider_type_total = n(), average_ride_length = mean(ride_length)) %>% 
+  arrange(member_casual, month)
+
+##most popular month
+ggplot(data = tripdata_2023_v3)+
+  geom_bar(mapping = aes(x=month,fill = rideable_type,))+
+  facet_wrap(~member_casual)
+```
+
+```{r}
+##weekly trends
+tripdata_2023_v3 %>% 
+  group_by(member_casual, day_of_week) %>% 
+  summarise(number_of_rides = n(),average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, day_of_week)  %>% 
+  ggplot(aes(x = day_of_week, y = average_duration, fill = member_casual)) +
+  geom_col(position = "dodge")
+```
+
+```{r}
+#Durational trends
+
+tripdata_2023_v3 %>% 
+  group_by(member_casual, month) %>% 
+  summarise(number_of_rides = n(),average_duration = mean(ride_length)) %>% 
+  arrange(member_casual, month)  %>% 
+  ggplot(aes(x = month, y = average_duration, fill = member_casual)) +
+  geom_col(position = "dodge")
+```
+
+
+```{r}
+#popular stations
+popular_start_stations_member <- tripdata_2023_v3 %>% 
+  filter(member_casual == 'member') %>% 
+  group_by(start_station_name) %>% 
+  summarise(number_of_starts = n()) %>% 
+  arrange(- number_of_starts)
+
+head(popular_start_stations_member)
+
+popular_start_stations_casual <- tripdata_2023_v3 %>% 
+  filter(member_casual == 'casual') %>% 
+  group_by(start_station_name) %>% 
+  summarise(number_of_starts = n()) %>% 
+  arrange(- number_of_starts)
+
+head(popular_start_stations_casual)
+```
+
+### Insights:
+1. With a strength of 2746739 member riders as compared to 1747867 casual riders, there are 998872 more member riders.
+
+2. Classic bikes are the most popular among both groups.
+
+3. The July 2022 saw the most casual riders while August 2022 saw the most member riders.
+
+4. Sunday is the most prefered week by casual riders, while members have similar count on saturdays too.
+
+5. Kingsbury St & Kinzie St is the most popular station among members.
+
+6. Streeter Dr & Grand Ave is the most popular station among casual riders.
+
+7. Casual members ride bikes for longer durations as compared to members.
+
+## Share
+#### Guiding Questions
+* **Were you able to answer the problem question?**
+Yes, I determined differences in riding behaviour and preferences between casual riders and annual members.
+
+* **What story does your data tell?**
+The data tells us that there are a large number of casual riders who have a higher average of ride duration. This is a potential target for the digital marketing campaign.
+
+* **How do your findings relate to your original question?**
+The data answered all the original questions.
+
+* **Why would casual riders buy Cyclistic annual memberships?**
+Casual members would buy the annual membership as they on average use the bikes for longer than members and the longest individual ride was also by a casual member.
+
+* **How can Cyclistic use digital media to influence casual riders to become members?**
+A digital media campaign with a focus on the benefits of a membership aimed at the casual rider who are using the bikes for long durations.
+
+#### Key tasks
+* Determine the best way to share findings
+* Create effective data visualizations
+* Present your findings
+* Ensure your work is accessible
+
+#### Deliverable
+Supporting visualizations and key findings
+
+## Act
+#### Guiding Questions
+* **What is your final conclusion based on your analysis?**
+There is an opportunity for Cyclistic to turn casual riders into annual members. There are casual riders who are using the bike sharing longer than the annual members and with a targeted marketing campaign at the popular stations, they can convert them to members.
+
+* **How could your team and business apply your insights?**
+The team could now work on a digital marketing campaign targeting long use casual riders. The campaign would focus on the benefits of being a member over a casual rider for longer rides.
+
+* **What next steps would you or your stakeholders take based on your findings?**
+I would recommend a more in-depth analysis on the long use casual riders however there is enough data to support a regional marketing campaign.
+
+* **Is there additional data you could use to expand on your findings?**
+Additional data that would expand the findings would include: demographic data, climate data, financial data, and marketing campaign history with there ROI.
+
+#### Key tasks
+* Create your portfolio
+* Add your case study
+* Practice presenting your case study
+
+#### Deliverable
+Top three recommendations based on the analysis.
+
+1. Educate casual riders on the perks of memberships as a medium to afford their long rides and how it could be more economical.
+
+2. The popular months could be targeted for the launch of campaigns at the popular stations.
+
+3. Incentives could be provided for using cycles on the non popular months by both members as well as casual riders.
+
+# Conclusion
+The bike_share is popular among both members as well as casual riders, analysing the usage pattern hints that the casual riders could find the membership useful. By using the popular locations and moths strategically, they could release offers and increase their membership base manifolds.I would like to thank the creators of the [Google Data Analytics ProfessionalCertificate](https://www.coursera.org/professional-certificates/google-data-analytics?utm_source=gg&utm_medium=sem&utm_campaign=15-GoogleDataAnalytics-LATAM&utm_content=15-GoogleDataAnalytics-LATAM&campaignid=12686019520&adgroupid=120140812253&device=c&keyword=google%20analytics%20course&matchtype=b&network=g&devicemodel=&adpostion=&creativeid=512414119178&hide_mobile_promo&gclid=EAIaIQobChMIwPGyn7f68AIVAgyRCh2nCwfVEAAYAyAAEgKjpvD_BwE) for making data analytics seem so easy. I would also like to thank the R community for helping me whenever I got stuck.
